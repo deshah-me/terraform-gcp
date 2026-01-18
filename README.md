@@ -1,7 +1,7 @@
 Terraform cheat code
 
-terraform init
-terraform plan
-terraform validate
-terraform apply --auto-approve
+terraform init <br/>
+terraform plan <br/>
+terraform validate <br/>
+terraform apply --auto-approve <br/>
 terraform fmt - to format terraform code 
