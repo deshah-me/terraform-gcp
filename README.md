@@ -1,352 +1,560 @@
-<div align="center">
-
-# 🚀 Terraform GCP Infrastructure Guide
-
-<img src="https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge&logo=terraform&logoColor=white" />
-<img src="https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white" />
-
-</div>
-
 <style>
-  .command-box {
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 8px;
+    color: #333;
+  }
+  
+  .container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  
+  h1 {
+    color: #667eea;
+    border-bottom: 3px solid #764ba2;
+    padding-bottom: 10px;
+    text-align: center;
+  }
+  
+  h2 {
+    color: #764ba2;
+    margin-top: 30px;
+    padding-left: 10px;
+    border-left: 4px solid #667eea;
+  }
+  
+  h3 {
+    color: #667eea;
+    margin-top: 20px;
+  }
+  
+  .command-box {
+    background: #f7f7f7;
+    border-left: 4px solid #667eea;
     padding: 15px;
     margin: 10px 0;
-    color: white;
+    border-radius: 5px;
     font-family: 'Courier New', monospace;
   }
   
-  .info-box {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    border-radius: 8px;
+  .warning {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
     padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+  }
+  
+  .success {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+  }
+  
+  .info {
+    background: #d1ecf1;
+    border-left: 4px solid #17a2b8;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+  }
+  
+  code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #d63384;
+    font-family: 'Courier New', monospace;
+  }
+  
+  pre {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+  }
+  
+  pre code {
+    background: transparent;
+    color: #f8f8f2;
+  }
+  
+  .step {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    display: inline-block;
     margin: 10px 0;
+    font-weight: bold;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background: #667eea;
     color: white;
   }
   
-  .success-box {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    border-radius: 8px;
-    padding: 15px;
-    margin: 10px 0;
-    color: white;
-  }
-  
-  .warning-box {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    border-radius: 8px;
-    padding: 15px;
-    margin: 10px 0;
-    color: #333;
+  tr:hover {
+    background: #f5f5f5;
   }
 </style>
 
----
+<div class="container">
 
-## 📋 Table of Contents
+# 🚀 PostgreSQL on GCP - Deployment Guide
 
-- [Prerequisites](#prerequisites)
-- [Essential Terraform Commands](#essential-terraform-commands)
-- [Project Structure](#project-structure)
-- [Setup Instructions](#setup-instructions)
-- [Access Your Instance](#access-your-instance)
-- [Useful Tips](#useful-tips)
-
----
-
-## ✅ Prerequisites
-
-Before you begin, ensure you have:
-
-- 🔧 **Terraform** installed (v1.0+)
-- ☁️ **Google Cloud SDK** (gcloud CLI) installed
-- 🔑 **Service Account Key** (keys.json)
-- 💳 **Active GCP Project** with billing enabled
+<div class="info">
+📅 <strong>Created:</strong> January 18, 2026<br>
+🏗️ <strong>Infrastructure:</strong> Terraform + Google Cloud Platform<br>
+🗄️ <strong>Database:</strong> PostgreSQL 15
+</div>
 
 ---
 
-## 🛠️ Essential Terraform Commands
+## 🎯 Quick Start Commands
 
-<div class="command-box">
+<div class="step">Step 1: Initialize Terraform</div>
 
-### 🎯 Initialize Terraform
 ```bash
 terraform init
 ```
-Downloads provider plugins and initializes the working directory.
 
+<div class="success">
+✅ This downloads the required providers (Google Cloud & Random)
 </div>
 
-<div class="command-box">
+<div class="step">Step 2: Format & Validate</div>
 
-### 📝 Format Terraform Files
 ```bash
+# Format configuration files
 terraform fmt
-```
-Automatically formats your `.tf` files to canonical style.
 
-</div>
-
-<div class="command-box">
-
-### ✔️ Validate Configuration
-```bash
+# Validate configuration
 terraform validate
 ```
-Checks whether the configuration is syntactically valid.
 
-</div>
+<div class="step">Step 3: Review Changes</div>
 
-<div class="command-box">
-
-### 📊 Plan Infrastructure Changes
 ```bash
 terraform plan
 ```
-Shows what changes Terraform will make to your infrastructure.
 
+<div class="info">
+💡 <strong>Tip:</strong> Review the plan carefully to see what resources will be created
 </div>
 
-<div class="command-box">
+<div class="step">Step 4: Deploy Infrastructure</div>
 
-### 🚀 Apply Changes
 ```bash
 terraform apply
 ```
-Creates or updates infrastructure according to configuration.
 
-**Auto-approve (skip confirmation):**
+Or for auto-approval:
+
 ```bash
 terraform apply --auto-approve
 ```
 
+---
+
+## 🔐 Retrieve Credentials
+
+After successful deployment, retrieve your database credentials:
+
+### 📋 Get All Outputs
+
+```bash
+terraform output
+```
+
+### 🔑 Get Specific Credentials
+
+```bash
+# Root password
+terraform output root_password
+
+# Application user password
+terraform output app_user_password
+
+# Instance IP address
+terraform output instance_ip_address
+
+# Connection name (for Cloud SQL Proxy)
+terraform output instance_connection_name
+
+# Database name
+terraform output database_name
+
+# Service account email
+terraform output service_account_email
+```
+
+<div class="warning">
+⚠️ <strong>Security Warning:</strong> Never commit these credentials to version control!
 </div>
 
-<div class="command-box">
+---
 
-### 🗑️ Destroy Infrastructure
+## 🔌 Connect to PostgreSQL
+
+### Method 1: Direct Connection (Using Public IP)
+
+```bash
+psql -h <INSTANCE_IP> -U app_user -d my-database
+```
+
+Example:
+```bash
+psql -h 35.123.45.67 -U app_user -d my-database
+# Enter password when prompted
+```
+
+### Method 2: Cloud SQL Proxy (Recommended)
+
+#### Install Cloud SQL Proxy
+
+**Windows:**
+```powershell
+# Download Cloud SQL Proxy
+curl -o cloud-sql-proxy.exe https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.8.0/cloud-sql-proxy.x64.exe
+```
+
+**Linux/Mac:**
+```bash
+curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.8.0/cloud-sql-proxy.linux.amd64
+chmod +x cloud-sql-proxy
+```
+
+#### Start Proxy
+
+```bash
+# Get connection name first
+terraform output instance_connection_name
+
+# Start proxy (Windows)
+cloud-sql-proxy.exe <CONNECTION_NAME>
+
+# Start proxy (Linux/Mac)
+./cloud-sql-proxy <CONNECTION_NAME>
+```
+
+#### Connect via Proxy
+
+```bash
+psql -h 127.0.0.1 -U app_user -d my-database
+```
+
+### Method 3: Connection String
+
+```bash
+postgresql://app_user:<PASSWORD>@<INSTANCE_IP>:5432/my-database
+```
+
+---
+
+## 🧪 Test SQL Connection
+
+### Basic Connection Test
+
+```sql
+-- Check PostgreSQL version
+SELECT version();
+
+-- Check current user
+SELECT current_user;
+
+-- List databases
+\l
+
+-- Connect to database
+\c my-database
+
+-- List tables
+\dt
+
+-- Check database size
+SELECT pg_size_pretty(pg_database_size('my-database'));
+```
+
+### Create Test Table
+
+```sql
+-- Create a test table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert test data
+INSERT INTO users (username, email) 
+VALUES 
+    ('john_doe', 'john@example.com'),
+    ('jane_smith', 'jane@example.com');
+
+-- Query data
+SELECT * FROM users;
+
+-- Check table info
+\d users
+```
+
+### Verify Permissions
+
+```sql
+-- Check current user privileges
+SELECT 
+    grantee, 
+    privilege_type 
+FROM information_schema.role_table_grants 
+WHERE table_name='users';
+
+-- Check database permissions
+\du
+```
+
+---
+
+## 📊 Monitor Database
+
+### Check Instance Status
+
+```bash
+gcloud sql instances describe <INSTANCE_NAME>
+```
+
+### View Logs
+
+```bash
+gcloud sql operations list --instance=<INSTANCE_NAME>
+```
+
+### Check Backups
+
+```bash
+gcloud sql backups list --instance=<INSTANCE_NAME>
+```
+
+---
+
+## 🔧 Management Commands
+
+### Update Database
+
+```bash
+# Modify main.tf and apply changes
+terraform apply
+```
+
+### View Current State
+
+```bash
+terraform show
+```
+
+### Refresh State
+
+```bash
+terraform refresh
+```
+
+### Destroy Infrastructure
+
+<div class="warning">
+⚠️ <strong>DANGER:</strong> This will delete all resources!
+</div>
+
 ```bash
 terraform destroy
 ```
-Removes all resources managed by Terraform.
 
-**Auto-approve:**
+Or with auto-approval:
+
 ```bash
 terraform destroy --auto-approve
 ```
 
-</div>
+---
 
-<div class="command-box">
+## 📦 Created Resources
 
-### 📄 Show Current State
-```bash
-terraform show
-```
-Displays the current state or a saved plan.
+| Resource | Description | Name/ID |
+|----------|-------------|---------|
+| 🗄️ **Cloud SQL Instance** | PostgreSQL 15 database instance | `postgres-instance-<random>` |
+| 📊 **Database** | Application database | `my-database` |
+| 👤 **Root User** | PostgreSQL admin user | `postgres` |
+| 👤 **App User** | Application user | `app_user` |
+| 🔐 **Service Account** | Cloud SQL client service account | `sql-client-sa` |
+| 🔑 **IAM Bindings** | Cloud SQL client & editor roles | - |
 
-</div>
+---
 
-<div class="command-box">
+## 🛡️ Security Features
 
-### 📋 List All Resources
-```bash
-terraform state list
-```
-Lists all resources in the Terraform state.
+- ✅ Automated daily backups
+- ✅ Point-in-time recovery enabled
+- ✅ 7-day backup retention
+- ✅ Auto-generated strong passwords (16 characters)
+- ✅ Service account with least-privilege access
+- ✅ IAM-based authentication support
 
-</div>
-
-<div class="command-box">
-
-### 🔍 Show Resource Details
-```bash
-terraform state show <resource_name>
-```
-Shows detailed information about a specific resource.
-
-**Example:**
-```bash
-terraform state show google_compute_instance.terraform-instance
-```
-
-</div>
-
-<div class="command-box">
-
-### 📤 Output Values
-```bash
-terraform output
-```
-Displays all output values defined in your configuration.
-
-**Show specific output:**
-```bash
-terraform output instance_internal_ip
-```
-
-</div>
-
-<div class="command-box">
-
-### 🔄 Refresh State
-```bash
-terraform refresh
-```
-Updates the state file with real infrastructure.
-
-</div>
-
-<div class="command-box">
-
-### 📊 Generate Dependency Graph
-```bash
-terraform graph | dot -Tpng > graph.png
-```
-Creates a visual representation of resource dependencies.
-
+<div class="warning">
+⚠️ <strong>Production Setup:</strong>
+<ul>
+  <li>Change authorized networks from <code>0.0.0.0/0</code> to specific IP ranges</li>
+  <li>Enable deletion protection</li>
+  <li>Use private IP configuration</li>
+  <li>Enable SSL/TLS encryption</li>
+  <li>Store credentials in Secret Manager</li>
+</ul>
 </div>
 
 ---
 
-## 📁 Project Structure
+## 🐛 Troubleshooting
 
-```
-terraform-gcp/
-├── 📄 main.tf              # Main infrastructure configuration
-├── 📄 provider.tf          # Provider and authentication setup
-├── 📄 output.tf            # Output definitions
-├── 📄 nginx.sh             # Startup script for nginx installation
-├── 🔑 keys.json            # GCP service account credentials (DO NOT COMMIT!)
-└── 📖 README.md            # This file
-```
+### Error: Authentication Failed
 
----
-
-## 🚀 Setup Instructions
-
-<div class="info-box">
-
-### 1️⃣ Clone and Navigate
 ```bash
-cd c:\Users\deepakshah\Desktop\Learning\terraform\gcp
+# Check if user exists
+gcloud sql users list --instance=<INSTANCE_NAME>
+
+# Reset password if needed
+terraform apply -replace="random_password.app_user_password"
 ```
 
-</div>
+### Error: Connection Timeout
 
-<div class="info-box">
-
-### 2️⃣ Create Service Account Key
-Follow the instructions in `provider.tf` to create `keys.json`
-
-</div>
-
-<div class="info-box">
-
-### 3️⃣ Initialize Terraform
 ```bash
-terraform init
+# Check firewall rules
+gcloud sql instances describe <INSTANCE_NAME> --format="value(settings.ipConfiguration)"
+
+# Check authorized networks in main.tf
 ```
 
-</div>
+### Error: Instance Already Exists
 
-<div class="success-box">
-
-### 4️⃣ Deploy Infrastructure
 ```bash
-terraform apply --auto-approve
-```
-
-</div>
-
----
-
-## 🔐 Access Your Instance
-
-<div class="warning-box">
-
-### 🖥️ SSH into Instance
-```bash
-gcloud compute ssh terraform-instance --zone=us-east1-b --project=us-con-gcp-sbx-dep0019-081424
-```
-
-</div>
-
-<div class="warning-box">
-
-### 🌐 Access Nginx via IAP Tunnel
-```bash
-gcloud compute start-iap-tunnel terraform-instance 80 --local-host-port=localhost:8080 --zone=us-east1-b --project=us-con-gcp-sbx-dep0019-081424
-```
-
-Then open: **http://localhost:8080** 🎉
-
-</div>
-
----
-
-## 💡 Useful Tips
-
-| Emoji | Tip | Command |
-|-------|-----|---------|
-| 🔍 | Check Terraform version | `terraform version` |
-| 🧹 | Clean up cached files | Remove `.terraform/` directory |
-| 📦 | Upgrade providers | `terraform init -upgrade` |
-| 🔒 | Lock state for safety | Automatically done during apply |
-| 📝 | View execution logs | `export TF_LOG=DEBUG` (Linux/Mac) or `$env:TF_LOG="DEBUG"` (PowerShell) |
-| 🎯 | Target specific resource | `terraform apply -target=google_compute_instance.terraform-instance` |
-| 💾 | Save plan to file | `terraform plan -out=tfplan` |
-| 📥 | Apply saved plan | `terraform apply tfplan` |
-
----
-
-## 🔥 Quick Reference Card
-
-### Common Workflow
-
-```mermaid
-graph LR
-    A[📝 Write Config] --> B[🎯 terraform init]
-    B --> C[✔️ terraform validate]
-    C --> D[📊 terraform plan]
-    D --> E[🚀 terraform apply]
-    E --> F[✅ Infrastructure Ready]
-    F --> G[🗑️ terraform destroy]
+# Import existing instance
+terraform import google_sql_database_instance.postgres_instance <INSTANCE_NAME>
 ```
 
 ---
 
-## ⚠️ Important Notes
+## 📚 Useful PostgreSQL Commands
 
-<div class="warning-box">
+### Database Operations
 
-- 🚫 **Never commit `keys.json`** to version control
-- 💰 **Monitor GCP costs** - resources incur charges
-- 🧹 **Clean up resources** when done to avoid charges
-- 🔒 **Use IAM best practices** - least privilege principle
-- 📋 **Review plans carefully** before applying
+```sql
+-- Create new database
+CREATE DATABASE new_db;
 
+-- Drop database
+DROP DATABASE new_db;
+
+-- List all schemas
+\dn
+
+-- List all functions
+\df
+```
+
+### User Management
+
+```sql
+-- Create new user
+CREATE USER new_user WITH PASSWORD 'secure_password';
+
+-- Grant privileges
+GRANT ALL PRIVILEGES ON DATABASE my-database TO new_user;
+
+-- Revoke privileges
+REVOKE ALL PRIVILEGES ON DATABASE my-database FROM new_user;
+
+-- Drop user
+DROP USER new_user;
+```
+
+### Performance Monitoring
+
+```sql
+-- Active connections
+SELECT * FROM pg_stat_activity;
+
+-- Database statistics
+SELECT * FROM pg_stat_database WHERE datname = 'my-database';
+
+-- Table sizes
+SELECT 
+    tablename,
+    pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS size
+FROM pg_tables
+WHERE schemaname = 'public'
+ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+```
+
+---
+
+## 🎓 Best Practices
+
+1. **🔐 Security**
+   - Rotate passwords regularly
+   - Use service accounts for application access
+   - Enable Cloud SQL Auth Proxy for production
+   - Restrict IP ranges in authorized networks
+
+2. **💾 Backups**
+   - Test backup restoration regularly
+   - Monitor backup success/failure
+   - Keep backup retention appropriate for compliance
+
+3. **📊 Monitoring**
+   - Set up Cloud Monitoring alerts
+   - Monitor connection counts
+   - Track query performance
+   - Watch disk utilization
+
+4. **💰 Cost Optimization**
+   - Use appropriate instance tier for workload
+   - Consider Cloud SQL editions (Enterprise, Enterprise Plus)
+   - Enable automatic storage increase
+   - Schedule instances for non-production environments
+
+---
+
+## 📞 Support & Resources
+
+- 📖 [Google Cloud SQL Documentation](https://cloud.google.com/sql/docs)
+- 📖 [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- 📖 [Terraform Google Provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs)
+- 💬 [GCP Community Support](https://cloud.google.com/support)
+
+---
+
+<div class="success">
+✨ <strong>Happy Coding!</strong> Your PostgreSQL database is ready to use! 🎉
 </div>
-
----
-
-## 🎓 Additional Resources
-
-- 📚 [Terraform Documentation](https://www.terraform.io/docs)
-- ☁️ [GCP Terraform Provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs)
-- 🎥 [Terraform Tutorials](https://learn.hashicorp.com/terraform)
-- 💬 [Terraform Community](https://discuss.hashicorp.com/c/terraform-core)
-
----
-
-<div align="center">
-
-### 🌟 Made with Terraform & GCP 🌟
-
-**Happy Terraforming! 🚀**
-
-<img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" />
-<img src="https://img.shields.io/badge/Maintained-Yes-blue?style=for-the-badge" />
 
 </div>
